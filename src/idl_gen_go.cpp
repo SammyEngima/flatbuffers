@@ -266,7 +266,9 @@ class GoGenerator : public BaseGenerator {
       if (i == 0) {
         code += "\tn := flatbuffers.GetUOffsetT(buf[offset:])\n";
       } else {
-        code += "\tn := flatbuffers.GetUOffsetT(buf[offset+flatbuffers.SizeUint32:])\n";
+        code +=
+            "\tn := "
+            "flatbuffers.GetUOffsetT(buf[offset+flatbuffers.SizeUint32:])\n";
       }
       code += "\tx := &" + struct_def.name + "{}\n";
       if (i == 0) {
@@ -1009,7 +1011,9 @@ class GoGenerator : public BaseGenerator {
                 NativeType(field.value.type) + ", " + length + ")\n";
         code += "\tfor j := 0; j < " + length + "; j++ {\n";
         if (field.value.type.element == BASE_TYPE_STRUCT) {
-          code += "\t\tx := " + field.value.type.struct_def->name + "{}\n";
+          code += "\t\tx := " +
+                  WrapInNameSpaceAndTrack(*field.value.type.struct_def) +
+                  "{}\n";
           code += "\t\trcv." + field_name_camel + "(&x, j)\n";
         }
         code += "\t\tt." + field_name_camel + "[j] = ";
